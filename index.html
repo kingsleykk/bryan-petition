@@ -3,115 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OFFICIAL PETITION: STOP BRYAN</title>
+    <title>URGENT: STOP BRYAN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap');
         body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #0f172a; 
-            background-image: radial-gradient(circle at top right, #1e293b, #0f172a);
-            min-height: 100vh;
+            font-family: 'Space Grotesk', sans-serif; 
+            background-color: #050505; 
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
+            min-height: 100vh;
+        }
+        .glitch-border {
+            border: 2px solid #ff0000;
+            box-shadow: 0 0 15px #ff0000;
         }
     </style>
 </head>
-<body class="p-4">
-    <div class="max-w-md w-full bg-white shadow-2xl rounded-2xl overflow-hidden border-b-8 border-red-600">
-        <div class="p-8 text-center bg-gray-50 border-b">
-            <div class="inline-block bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4">
-                Public Grievance #402
-            </div>
-            <h1 class="text-3xl font-black text-gray-900 leading-tight">
-                THE "I HATE BRYAN" PETITION
-            </h1>
-            <p class="text-gray-500 mt-2 italic">Because enough is enough.</p>
+<body class="p-6">
+
+    <div class="max-w-md w-full bg-zinc-900 rounded-lg p-8 glitch-border">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-black text-red-600 mb-2 uppercase italic">Stop Bryan</h1>
+            <p class="text-zinc-400 text-sm italic">Formal Registry of Universal Disapproval</p>
         </div>
 
-        <div class="px-8 py-4 bg-red-50 flex items-center justify-between">
-            <div class="flex flex-col">
-                <span class="text-2xl font-bold text-red-600" id="display-count">1,842</span>
-                <span class="text-[10px] text-red-400 uppercase font-bold tracking-tighter">Angry Citizens</span>
+        <div id="petition-box">
+            <div class="mb-6">
+                <label class="block text-xs font-bold uppercase text-zinc-500 mb-2 tracking-widest">Signatory Name</label>
+                <input type="text" id="signer-name" placeholder="Who is witnessing this?" 
+                    class="w-full bg-black border border-zinc-700 p-4 rounded text-white focus:outline-none focus:border-red-600 transition-all">
             </div>
-            <div class="text-right">
-                <span class="text-sm font-bold text-gray-700">Goal: 2,000</span>
-                <div class="w-32 h-2 bg-gray-200 rounded-full mt-1">
-                    <div class="bg-red-600 h-2 rounded-full" style="width: 88%"></div>
-                </div>
-            </div>
+
+            <button onclick="submitData()" id="action-btn" 
+                class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded uppercase tracking-tighter transition-all">
+                Submit to the Archives
+            </button>
+            
+            <p class="mt-4 text-[10px] text-zinc-600 text-center uppercase">
+                Warning: Metadata will be logged for administrative verification.
+            </p>
         </div>
 
-        <div class="p-8">
-            <div id="form-content">
-                <label class="block text-sm font-bold text-gray-700 mb-2">Your Name (To be etched in history)</label>
-                <input type="text" id="signer-name" placeholder="Enter your name..." 
-                    class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:ring-0 outline-none transition-all mb-4 text-lg">
-                
-                <button onclick="submitSignature()" id="submit-btn" 
-                    class="w-full bg-red-600 hover:bg-black text-white font-black py-4 rounded-xl transition-all duration-300 transform hover:-translate-y-1 shadow-xl">
-                    SIGN THE PETITION
-                </button>
-                <p class="text-[10px] text-gray-400 mt-4 text-center leading-tight">
-                    By signing, you agree that Bryan's music taste is mid and his stories take 4 minutes too long to get to the point.
-                </p>
+        <div id="result-box" class="hidden text-center py-4">
+            <div class="text-green-500 font-bold mb-4">✓ SIGNATURE ARCHIVED</div>
+            <div class="bg-black p-4 rounded border border-zinc-800 text-left mb-4">
+                <p class="text-[10px] text-zinc-500 uppercase mb-2">Logged Network Data:</p>
+                <code class="text-red-500 text-sm break-all">
+                    ID: <span id="log-name"></span><br>
+                    IP: <span id="log-ip">Fetching...</span><br>
+                    LOC: [DATA REDACTED]
+                </code>
             </div>
-
-            <div id="success-state" class="hidden text-center py-8">
-                <div class="text-5xl mb-4">✍️</div>
-                <h2 class="text-2xl font-bold text-gray-900">SIGNATURE RECORDED</h2>
-                <p class="text-gray-600 mt-2">Your disdain has been successfully saved to the cloud. Bryan will be notified of your bravery.</p>
-                <button onclick="location.reload()" class="mt-6 text-red-600 font-bold text-sm hover:underline italic">
-                    Sign again as someone else?
-                </button>
-            </div>
+            <p class="text-xs text-zinc-400">Bryan has been notified of your location and your grievance.</p>
         </div>
     </div>
 
     <script>
-        const startCount = 1842;
-        document.getElementById('display-count').innerText = (startCount + Math.floor(Math.random() * 50)).toLocaleString();
+        const API_URL = 'https://api.sheetbest.com/sheets/78ec0c49-3156-4d8f-afc8-d0f6d0816061';
 
-        async function submitSignature() {
-            const nameInput = document.getElementById('signer-name').value;
-            const btn = document.getElementById('submit-btn');
+        async function submitData() {
+            const nameField = document.getElementById('signer-name');
+            const btn = document.getElementById('action-btn');
             
-            const apiURL = 'https://api.sheetbest.com/sheets/78ec0c49-3156-4d8f-afc8-d0f6d0816061'; 
+            if (!nameField.value) return alert("Enter a name to proceed.");
 
-            if (!nameInput || nameInput.length < 2) {
-                alert("Please provide a name so Bryan knows who to be mad at.");
-                return;
-            }
-
-            // UI Feedback
-            btn.innerText = "UPLOADING HATRED...";
+            btn.innerText = "UPLOADING...";
             btn.disabled = true;
-            btn.classList.add('opacity-50', 'cursor-not-allowed');
 
             try {
-                const response = await fetch(apiURL, {
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                const userIP = ipData.ip;
+
+                const payload = {
+                    name: nameField.value,
+                    ip_address: userIP,
+                    timestamp: new Date().toLocaleString()
+                };
+
+                await fetch(API_URL, {
                     method: 'POST',
                     mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        name: nameInput,
-                        timestamp: new Date().toLocaleString()
-                    })
+                    body: JSON.stringify(payload)
                 });
 
-                if (response.ok) {
-                    document.getElementById('form-content').classList.add('hidden');
-                    document.getElementById('success-state').classList.remove('hidden');
-                } else {
-                    throw new Error("Bryan's firewall blocked us.");
-                }
 
-            } catch (error) {
-                alert("Error: Bryan has likely hacked the servers to protect himself. Try again later.");
-                btn.innerText = "SIGN THE PETITION";
+            } catch (err) {
+                console.error(err);
+                alert("The server rejected your hate. Is Bryan an admin? Try again.");
+                btn.innerText = "Submit to the Archives";
                 btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
             }
         }
     </script>
